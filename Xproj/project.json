@@ -1,0 +1,33 @@
+{
+	"version": "1.0.0-*",
+	"description": "Xproj Class Library",
+	"authors": [ "shannon" ],
+	"tags": [ "" ],
+	"projectUrl": "",
+	"licenseUrl": "",
+
+	"dependencies": {
+		"xunit": "2.1.0",
+		"xunit.abstractions": "2.0.0",
+		"xunit.assert": "2.1.0",
+		"xunit.core": "2.1.0",
+		"xunit.extensibility.core": "2.1.0",
+		"xunit.extensibility.execution": "2.1.0",
+		"xunit.runner.dnx": "2.1.0-beta6-build191"
+	},
+
+	"commands": {
+		"test": "xunit.runner.dnx"
+	},
+
+	"frameworks": {
+		"dnx46": {
+			"dependencies": {
+				"TechTalk.SpecFlow": "1.0.0-*"
+			},
+			"frameworkAssemblies": {
+				"System.Runtime": "4.0.20.0"
+			}
+		}
+	}
+}
