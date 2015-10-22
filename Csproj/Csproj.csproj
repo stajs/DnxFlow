@@ -66,6 +66,11 @@
       <DependentUpon>csproj.feature</DependentUpon>
     </Compile>
     <Compile Include="CsprojSteps.cs" />
+    <Compile Include="Features\InFolder.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>InFolder.feature</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -75,6 +80,10 @@
     <None Include="csproj.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>csproj.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Features\InFolder.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>InFolder.feature.cs</LastGenOutput>
     </None>
     <None Include="packages.config" />
   </ItemGroup>
