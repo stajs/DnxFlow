@@ -3,39 +3,53 @@
 	tap = require('gulp-tap'),
 	debug = require('gulp-debug'),
 	path = require('path'),
+	run = require('run-sequence'),
+	fs = require('fs'),
 	file = require('gulp-file');
 
-gulp.task('default', function () {
+var fakeCsproj = '';
 
-	var features = [];
+var saveCsproj = function(content) {
+	fs.writeFile('Xproj.csproj.fake', content, function (err) {
+		if (err) {
+			return console.log(err);
+		}
 
-	var csProjHeader = '<?xml version="1.0" encoding="utf-8"?>' +
+		console.log('The file was saved!');
+	});
+};
+
+gulp.task('DnxFlow', function () {
+
+	fakeCsproj = '<?xml version="1.0" encoding="utf-8"?>' +
 		'\n<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">' +
 		'\n	<ItemGroup>' +
 		'\n		<None Include="app.config">' +
 		'\n			<SubType>Designer</SubType>' +
 		'\n		</None>';
 
-	var csProjFooter = '\n</Project>';
-
 	return gulp.src('**/**.feature')
-		.pipe(debug())
+		//.pipe(debug())
 		.pipe(tap(function(file) {
-			var feature = file.path.replace(file.cwd + '\\', '');
-			//console.log('Adding: ' + feature);
-			features.push(feature);
-
-			var item = 
-				'\n		<None Include="Features\InFolder.feature">' +
+			var relativePath = file.path.replace(file.cwd + '\\', '');
+			fakeCsproj +=
+				'\n		<None Include="' + relativePath + '">' +
 				'\n			<Generator>SpecFlowSingleFileGenerator</Generator>' +
-				'\n			<LastGenOutput>' + feature +'</LastGenOutput>' +
+				'\n			<LastGenOutput>' + path.basename(file.path) + '.cs</LastGenOutput>' +
 				'\n		</None>';
+		}))
+		.on('end', function () {
+			fakeCsproj +=
+				'\n	</ItemGroup>' +
+				'\n</Project>';
 
-			console.log('Features: ' + features);
-			console.log(item);
-		}));
+			console.log(fakeCsproj);
+			saveCsproj(fakeCsproj);
 
+		});
+});
 
-//return file('Xproj.csproj.fake', str, { src: true })
-	//	.pipe(gulp.dest('DnxFlow'));
+gulp.task('default', ['DnxFlow'], function() {
+	console.log("callback: " + fakeCsproj);
+	saveCsproj(fakeCsproj);
 });
