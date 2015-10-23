@@ -18,15 +18,15 @@ namespace SpecFlow.GeneratedTests
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("TechTalk.SpecFlow", "1.9.0.77")]
     [System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    public partial class XprojFeature : Xunit.IClassFixture<XprojFeature.FixtureData>, System.IDisposable
+    public partial class InFolderFeature : Xunit.IClassFixture<InFolderFeature.FixtureData>, System.IDisposable
     {
         
         private static TechTalk.SpecFlow.ITestRunner testRunner;
         
-#line 1 "xproj.feature"
+#line 1 "InFolder.feature"
 #line hidden
         
-        public XprojFeature()
+        public InFolderFeature()
         {
             this.TestInitialize();
         }
@@ -34,7 +34,7 @@ namespace SpecFlow.GeneratedTests
         public static void FeatureSetup()
         {
             testRunner = TechTalk.SpecFlow.TestRunnerManager.GetTestRunner();
-            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "xproj", "In order to avoid silly mistakes\nAs a math idiot\nI want to be told the sum of two" +
+            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "InFolder", "In order to avoid silly mistakes\nAs a math idiot\nI want to be told the sum of two" +
                     " numbers", ProgrammingLanguage.CSharp, ((string[])(null)));
             testRunner.OnFeatureStart(featureInfo);
         }
@@ -64,7 +64,7 @@ namespace SpecFlow.GeneratedTests
             testRunner.CollectScenarioErrors();
         }
         
-        public virtual void SetFixture(XprojFeature.FixtureData fixtureData)
+        public virtual void SetFixture(InFolderFeature.FixtureData fixtureData)
         {
         }
         
@@ -74,21 +74,21 @@ namespace SpecFlow.GeneratedTests
         }
         
         [Xunit.FactAttribute()]
-        [Xunit.TraitAttribute("FeatureTitle", "xproj")]
+        [Xunit.TraitAttribute("FeatureTitle", "InFolder")]
         [Xunit.TraitAttribute("Description", "Add two numbers")]
         public virtual void AddTwoNumbers()
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Add two numbers", new string[] {
                         "mytag"});
-#line 9
+#line 7
 this.ScenarioSetup(scenarioInfo);
-#line 10
+#line 8
  testRunner.Given("I have entered 50 into the calculator", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
-#line 11
+#line 9
  testRunner.And("I have entered 70 into the calculator", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line 12
+#line 10
  testRunner.When("I press add", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
-#line 13
+#line 11
  testRunner.Then("the result should be 120 on the screen", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             this.ScenarioCleanup();
@@ -101,12 +101,12 @@ this.ScenarioSetup(scenarioInfo);
             
             public FixtureData()
             {
-                XprojFeature.FeatureSetup();
+                InFolderFeature.FeatureSetup();
             }
             
             void System.IDisposable.Dispose()
             {
-                XprojFeature.FeatureTearDown();
+                InFolderFeature.FeatureTearDown();
             }
         }
     }
