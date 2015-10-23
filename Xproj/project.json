@@ -7,6 +7,7 @@
 	"licenseUrl": "",
 
 	"dependencies": {
+		"SpecFlow": "1.9.0",
 		"xunit": "2.1.0",
 		"xunit.abstractions": "2.0.0",
 		"xunit.assert": "2.1.0",
@@ -23,7 +24,6 @@
 	"frameworks": {
 		"dnx46": {
 			"dependencies": {
-				"TechTalk.SpecFlow": "1.0.0-*"
 			},
 			"frameworkAssemblies": {
 				"System.Runtime": "4.0.20.0"

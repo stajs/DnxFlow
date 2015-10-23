@@ -9,6 +9,6 @@
 		"gulp-tap": "0.1.3",
 		"gulp-debug": "2.1.2",
 		"gulp-filenames": "2.0.0",
-		"gulp-path": "2.0.2",
+		"gulp-path": "2.0.2"
 	}
 }
