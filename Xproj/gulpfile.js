@@ -1,13 +1,10 @@
 ﻿var gulp = require('gulp'),
 	execSync = require('child_process').execSync,
 	tap = require('gulp-tap'),
-	debug = require('gulp-debug'),
 	path = require('path'),
-	run = require('run-sequence'),
 	fs = require('fs'),
 	glob = require('glob'),
-	replace = require('gulp-replace'),
-	file = require('gulp-file');
+	replace = require('gulp-replace');
 
 var fakeCsprojContent = '';
 var fakeCsprojFilename = '';
