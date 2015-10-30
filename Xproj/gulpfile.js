@@ -29,6 +29,7 @@ gulp.task('getFilenames', function(cb) {
 gulp.task('generateFakeCsproj', ['getFilenames'], function (cb) {
 
 	fakeCsprojContent = '<?xml version="1.0" encoding="utf-8"?>' +
+		// Set the "ToolsVersion" to VS2013, see: https://github.com/techtalk/SpecFlow/issues/471
 		'\n<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">' +
 		'\n  <PropertyGroup>' +
 		'\n    <RootNamespace>' + xprojFilename.replace('.xproj', '') + '</RootNamespace>' +
@@ -76,6 +77,7 @@ gulp.task('generateSpecFlowGlue', ['generateFakeCsproj'], function (cb) {
 		throw e;
 	}
 
+	// Credit: http://stackoverflow.com/questions/11363202/specflow-fails-when-trying-to-generate-test-execution-report
 	var configFile = specflowExe + '.config';
 	var configFileContents = '<?xml version="1.0" encoding="utf-8" ?><configuration><startup><supportedRuntime version="v4.0.30319" /></startup></configuration>';
 
@@ -88,6 +90,7 @@ gulp.task('generateSpecFlowGlue', ['generateFakeCsproj'], function (cb) {
 
 	console.log('Created: ' + configFile);
 
+	// Credit: http://www.marcusoft.net/2010/12/specflowexe-and-mstest.html
 	var command = specflowExe + ' generateall ' + fakeCsprojFilename + ' /force /verbose';
 	console.log('Calling: ' + command);
 
