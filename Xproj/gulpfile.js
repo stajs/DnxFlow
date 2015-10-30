@@ -26,7 +26,7 @@ gulp.task('getFilenames', function(cb) {
 	cb();
 });
 
-gulp.task('generateFakeCsprojContent', ['getFilenames'], function (cb) {
+gulp.task('generateFakeCsproj', ['getFilenames'], function (cb) {
 
 	fakeCsprojContent = '<?xml version="1.0" encoding="utf-8"?>' +
 		'\n<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">' +
@@ -53,22 +53,20 @@ gulp.task('generateFakeCsprojContent', ['getFilenames'], function (cb) {
 				'\n</Project>';
 
 			console.log(fakeCsprojContent);
+
+			try {
+				fs.writeFileSync(fakeCsprojFilename, fakeCsprojContent);
+			} catch (e) {
+				console.log('Couldn\'t save fake csproj!');
+				throw e;
+			}
+			console.log('File saved!');
+
 			cb();
 		});
 });
 
-gulp.task('saveFakeCsproj', ['generateFakeCsprojContent'], function (cb) {
-	try {
-		fs.writeFileSync(fakeCsprojFilename, fakeCsprojContent);	
-	} catch (e) {
-		console.log('Couldn\'t save fake csproj!');
-		throw e;
-	}
-	console.log('File saved!');
-	cb();
-});
-
-gulp.task('generateAndSaveSpecFlowGlue', ['saveFakeCsproj'], function(cb) {
+gulp.task('generateSpecFlowGlue', ['generateFakeCsproj'], function (cb) {
 	var specflowExe = path.join(process.env.USERPROFILE, '.dnx\\packages\\SpecFlow\\1.9.0\\tools\\specflow.exe');
 
 	try {
@@ -78,14 +76,36 @@ gulp.task('generateAndSaveSpecFlowGlue', ['saveFakeCsproj'], function(cb) {
 		throw e;
 	}
 
+	var configFile = specflowExe + '.config';
+	var configFileContents = '<?xml version="1.0" encoding="utf-8" ?><configuration><startup><supportedRuntime version="v4.0.30319" /></startup></configuration>';
+
+	try {
+		fs.writeFileSync(configFile, configFileContents);
+	} catch (e) {
+		console.log('Couldn\'t write specflow config file!');
+		throw e;
+	}
+
+	console.log('Created: ' + configFile);
+
 	var command = specflowExe + ' generateall ' + fakeCsprojFilename + ' /force /verbose';
 	console.log('Calling: ' + command);
 
 	execSync(command, { stdio: [0, 1, 2] });
+
+	try {
+		fs.unlinkSync(configFile);
+	} catch (e) {
+		console.log('Couldn\'t remove (clean up) specflow config file!');
+		throw e;
+	}
+	
+	console.log('Removed: ' + configFile);
+
 	cb();
 });
 
-gulp.task('xUnitTwoFix', ['generateAndSaveSpecFlowGlue'], function () {
+gulp.task('xUnitTwoFix', ['generateSpecFlowGlue'], function () {
 	console.log('Fixing SpecFlow generated files for xUnit v2');
 	return gulp.src('**/**.feature.cs')
 		.pipe(replace(' : Xunit.IUseFixture<', ' : Xunit.IClassFixture<'))
