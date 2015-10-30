@@ -8,45 +8,48 @@
 
 var fakeCsprojContent = '';
 var fakeCsprojFilename = '';
+var xprojFilename = '';
 
-gulp.task('getFakeCsprojFilename', function(cb) {
-	var xproj = null;
+gulp.task('getFilenames', function(cb) {
 
 	try {
-		xproj = glob.sync('*.xproj')[0];
+		xprojFilename = glob.sync('*.xproj')[0];
 	} catch (e) {
 		console.log('Couldn\'t glob for xproj!');
 		throw e;
 	}
 
-	console.log('Found xproj: ' + xproj);
-	fakeCsprojFilename = xproj.replace('.xproj', '.csproj.fake');
+	console.log('Found xproj: ' + xprojFilename);
+	fakeCsprojFilename = xprojFilename.replace('.xproj', '.csproj.fake');
 	console.log('Fake csproj: ' + fakeCsprojFilename);
 
 	cb();
 });
 
-gulp.task('generateFakeCsprojContent', ['getFakeCsprojFilename'], function (cb) {
+gulp.task('generateFakeCsprojContent', ['getFilenames'], function (cb) {
 
 	fakeCsprojContent = '<?xml version="1.0" encoding="utf-8"?>' +
-		'\n<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">' +
-		'\n	<ItemGroup>' +
-		'\n		<None Include="app.config">' +
-		'\n			<SubType>Designer</SubType>' +
-		'\n		</None>';
+		'\n<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">' +
+		'\n  <PropertyGroup>' +
+		'\n    <RootNamespace>' + xprojFilename.replace('.xproj', '') + '</RootNamespace>' +
+		'\n  </PropertyGroup>' +
+		'\n  <ItemGroup>' +
+		'\n    <None Include="app.config">' +
+		'\n      <SubType>Designer</SubType>' +
+		'\n    </None>';
 
 	gulp.src('**/**.feature')
 		.pipe(tap(function (file) {
 			var relativePath = file.path.replace(file.cwd + '\\', '');
 			fakeCsprojContent +=
-				'\n		<None Include="' + relativePath + '">' +
-				'\n			<Generator>SpecFlowSingleFileGenerator</Generator>' +
-				'\n			<LastGenOutput>' + path.basename(file.path) + '.cs</LastGenOutput>' +
-				'\n		</None>';
+				'\n    <None Include="' + relativePath + '">' +
+				'\n      <Generator>SpecFlowSingleFileGenerator</Generator>' +
+				'\n      <LastGenOutput>' + path.basename(file.path) + '.cs</LastGenOutput>' +
+				'\n    </None>';
 		}))
 		.on('end', function () {
 			fakeCsprojContent +=
-				'\n	</ItemGroup>' +
+				'\n  </ItemGroup>' +
 				'\n</Project>';
 
 			console.log(fakeCsprojContent);
@@ -73,21 +76,23 @@ gulp.task('generateAndSaveSpecFlowGlue', ['saveFakeCsproj'], function(cb) {
 	} catch (e) {
 		console.log('Couldn\'t find specflow.exe!');
 		throw e;
-	} 
-	console.log('Using ' + specflowExe);
+	}
 
-	execSync(specflowExe + ' generateall ' + fakeCsprojFilename + ' /force /verbose', { stdio: [0, 1, 2] });
+	var command = specflowExe + ' generateall ' + fakeCsprojFilename + ' /force /verbose';
+	console.log('Calling: ' + command);
+
+	execSync(command, { stdio: [0, 1, 2] });
 	cb();
 });
 
-gulp.task('xUnitTwo', ['generateAndSaveSpecFlowGlue'], function () {
-	console.log('Fixing SpecFlow glue files for xUnit v2');
+gulp.task('xUnitTwoFix', ['generateAndSaveSpecFlowGlue'], function () {
+	console.log('Fixing SpecFlow generated files for xUnit v2');
 	return gulp.src('**/**.feature.cs')
 		.pipe(replace(' : Xunit.IUseFixture<', ' : Xunit.IClassFixture<'))
 		.pipe(gulp.dest(function (file) {
-			console.log("Fixing: " + file.path);
+			console.log("Fixed: " + file.path);
 			return file.base;
 		}));
 });
 
-gulp.task('DnxFlow', ['xUnitTwo']);
+gulp.task('DnxFlow', ['xUnitTwoFix']);
